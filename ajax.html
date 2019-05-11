@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+        tr{
+            cursor:pointer;
+        }
+        #loading-modal{
+            display: none;
+            position: fixed;
+            opacity: 0.7;
+            top: 0;
+            left:0;
+            width: 100%;
+            height: 100%;
+            background-color: #FFFFFF;
+            z-index: 50;
+        }
+
+        #loading-img{
+            display: none;
+            position: fixed;
+            top: 0;
+            left:0;
+            z-index: 51;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-modal"></div>
+    <img id="loading-img" src="img/progress.gif" />
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Produits</h1>
+                <select id="type" class="form-control">
+                    <option value="all">Tout afficher</option>
+                    <option value="jouet">Jouet</option>
+                    <option value="meuble">Meuble</option>
+                </select>
+                <table id="produits" class="table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Type</th>
+                            <th>Prix</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="produitsBody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div id="description" class="col-md-12">
+
+            </div>
+        </div>
+        <h2>Ajout produit</h2>
+        <div id="message"></div>
+        <form id="form-produit">
+            <div class="form-group">
+                <label for="nameProduct">Nom</label>
+                <input name="name" type="text" class="form-control" id="nameProduct">
+            </div>
+            <div class="form-group">
+                <label for="descriptionProduct">Description</label>
+                <textarea class="form-control" rows="3" id="descriptionProduct" name="description"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="typeProduct">Type</label>
+                <select id="typeProduct" class="form-control" name="type">
+                    <option value="jouet">Jouet</option>
+                    <option value="meuble">Meuble</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="priceProduct">Prix</label>
+                <input type="text" name="price" class="form-control" id="priceProduct">
+            </div>
+            <div class="form-group">
+                <button id="addButton" class="btn btn-primary" type="submit">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript" src="js/loader.js"></script>
+    <script type="text/javascript" src="js/client.js"></script>
+    <script type="text/javascript" src="js/script-fetch.js"></script>
+</body>
+</html>
