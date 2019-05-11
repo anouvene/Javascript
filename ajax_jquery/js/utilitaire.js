@@ -52,9 +52,12 @@ let tblEleves = [
 ];
 
 
-
-function GenerationTableauEleves(tableauDeDonnees , composantGraphiqueParent)
-{
+/**
+ * Générer les lignes tr d'eleves dans un table
+ * @param {*} tableauDeDonnees 
+ * @param {*} composantGraphiqueParent 
+ */
+function GenerationTableauEleves(tableauDeDonnees , composantGraphiqueParent) {
 	composantGraphiqueParent.empty();
 	
 	for(eleve of tableauDeDonnees)
@@ -78,12 +81,101 @@ function GenerationTableauEleves(tableauDeDonnees , composantGraphiqueParent)
 	
 }
 
-// Retiurner un eleve sinon undefined
-function RecupereElementDuTableau(tableau,id)
-{
+/**
+ * Retourner un eleve par id sinon retourner undefined
+ * @param {*} tableau 
+ * @param {*} id 
+ */
+function RecupereElementDuTableau(tableau, id) {
 	return tableau.find(elem => elem.idEleve == id);
 }
+
+/**
+ * Retourner un eleve by id eleve
+ * @param {*} id 
+ */
+function getEleveById(id) {
+	let eleve = null;
 	
+	for(e of tblEleves) {			
+		if(e.idEleve == id) {
+			eleve = e;
+		}
+	}
+	
+	return JSON.stringify(eleve);
+}
+
+
+/**
+ * Insérer une nouvelle ligne tr (eleve) dans un table
+ * @param {*} valeurs 
+ */
+function insererLigneEleve(valeurs) {
+	const {nom, prenom} = valeurs;
+	
+	let nbEleves = tblEleves.length + 1;
+			
+	if(nom !== "" && prenom .trim() !== "") {
+		tdIdEleve = "<td>"+ nbEleves +"</td>";
+		tdNom = "<td>"+ nom +"</td>";
+		tdPrenom ="<td>"+ prenom +"</td>";
+		
+		tdActions =  "<td class='text-success'>";
+		tdActions += "<a href='#collapseNote' title='Voir les notes' class='btn btn-success btn-voir' data-ideleve='" + nbEleves + "' data-toggle='collapse' data-target='#collapseNotes'><i class='material-icons md-24'>notes</i></a> ";
+		tdActions += "<a href='#eleve' title='Modifier un élève' class='btn btn-warning btn-edit' data-toggle='modal' data-target='#editEleveModal'><i class='material-icons md-24'>edit</i></a>" ;
+		tdActions += " <a href='#eleve' title='Supprimer un élève' class='btn btn-danger btn-delete'><i class='material-icons md-24'>delete_forever</i></a></td>";
+		
+		$tr = $("<tr data-toggle='collapse' data-target='#eleve_" + nbEleves +"' class='accordion-toggle'>" 
+				+ tdIdEleve 
+				+ tdNom 
+				+ tdPrenom
+				+ tdActions
+				+ "</tr>");
+		
+		let eleve = null;
+		
+		eleve = { "idEleve": nbEleves, "nom": nom, "prenom": prenom, "notes": [] };
+		
+		// Ajouter cet nouvel eleve dans le tableau tblEleves
+		tblEleves.push(eleve);
+		
+		return $tr;
+	}
+}
+
+
+function GenerationTableauNotesDunEleve(eleve , composantGraphiqueParent) {
+	// Vider le bloc notesTbody 
+	composantGraphiqueParent.empty();
+
+	let $tr = null;
+		
+	// Générer les lignes de notes
+	for(note of eleve.notes) {
+		$tr = $("<tr>"
+				+ "<td>" + eleve.idEleve + "</td>"
+				+ "<td>" + note.idNote + "</td>"
+				+ "<td>" + note.matiere + "</td>"
+				+ "<td>" + note.coef + "</td>"
+				+ "<td>" + note.valeur +"</td>"
+				+ "<td>" + note.dateExam +"</td>"						
+				+ "</tr>");
+		
+		$tr.prependTo($("#notesTbody"));
+	}
+}
+
+/**
+ * Recuperer les notes d un eleve by id
+ * @param {*} id 
+ */
+function getNotes(id) {
+	const eleve = RecupereElementDuTableau(tblEleves, id);
+	const notesEleve = eleve.notes;
+	
+	return JSON.stringify(notesEleve);
+}
 
 	
 	
