@@ -40,6 +40,10 @@ $(function() {
 
 		// Regenerer l'affichage tableau
 		GenerationTableauEleves(tblEleves , $("#eleveTbody"));
+
+		// Vider et fermer notesTbody
+		$("#notesTbody").empty();
+		$("#collapseNotes").collapse("hide");
 		
 		
 	});
@@ -47,9 +51,12 @@ $(function() {
 	// MODAL: Modifier un eleve	et ses notes
 	$("#eleveTbody").on("click", ".btn-edit", function() { // Delegate event click
 		$this = $(this); // .btn-edit
-		let id = $this.closest(".text-success").find("a.btn-voir").attr("data-ideleve");
 		
-		// Eleve en cours			
+		// Fermer collapse notes
+		$("#collapseNotes").collapse("hide");
+		
+		// Eleve en cours	
+		let id = $this.closest(".text-success").find("a.btn-voir").attr("data-ideleve");		
 		let eleve = RecupereElementDuTableau(tblEleves, id);		
 		
 		$('#editEleveModal').on('shown.bs.modal', function (e) {
@@ -187,7 +194,7 @@ $(function() {
 
 			// Regénérer l'affichage des notes
 			GenerationTableauNotesDunEleve(eleveToUpdate , $("#notesTbody"));
-			$("collapseNotes").modal("show");
+			$("#collapseNotes").collapse("show");
 			
 			
 		});
