@@ -1,6 +1,6 @@
 $(function() {
 	// Génerer tableau eleves
-	GenerationTableauEleves(tblEleves , $("#eleveTbody"));
+	GenererTableauEleves(tblEleves , $("#eleveTbody"));
 	
 	// Ajouter eleve
 	$("#btnAddEleve").on("click", function() {
@@ -26,96 +26,117 @@ $(function() {
 		// console.log(tblEleves);
 		
 	});
+
+	// Voir les notes d un eleve
+	$("#eleveTbody").on("click", ".btn-voir", function() {
+		$(".btn-voir").removeClass("btn-success");
+		$(".btn-voir").find("i").empty().text("visibility");
+
+		// Infos eleve
+		const id = $(this).attr("data-ideleve");
+		const eleve = RecupereElementDuTableau(tblEleves, id);
+
+		// Changer l'apparence du bouton
+		if($(this).find("i").text() == "visibility") {
+			$(this).addClass("btn-success");
+			$(this).find("i").empty().text("visibility_off");
+		} else {
+			$(this).removeClass("btn-success");
+			$(this).find("i").empty().text("visibility");
+
+			$("#collapseNotes").collapse('hide');
+		}
+
+		// Generer les tr notes
+		GenererTableauNotesDunEleve(eleve , $("#notesTbody"));
+	});
 		
 	// Supprimer un eleve
 	$("#eleveTbody").on("click", ".btn-delete", function() {
-		let id = $(this).closest(".text-success").find("a.btn-voir").attr("data-ideleve");
-		
+		let id = $(this).closest(".actions").find("a.btn-voir").attr("data-ideleve");
+		console.log("ID eleve à supprimer: ", id);
+
 		let eleve = RecupereElementDuTableau(tblEleves, id);
 		let posEleve = tblEleves.findIndex( e => e.idEleve == id);
-		// console.log(posEleve);
+		console.log("Position eleve dans le tableau", posEleve);
 		
 		// Supprimer eleve
-		tblEleves.splice(posEleve, 1);
+		const eleveDeleted = tblEleves.splice(posEleve, 1);
 
-		// Regenerer l'affichage tableau
-		GenerationTableauEleves(tblEleves , $("#eleveTbody"));
+		console.log("Eleve supprimé: ", eleveDeleted);
+
+
+		// Reactualiser l'affichage tableau
+		GenererTableauEleves(tblEleves , $("#eleveTbody"));
 
 		// Vider et fermer notesTbody
 		$("#notesTbody").empty();
 		$("#collapseNotes").collapse("hide");
-		
-		
 	});
 			
 	// MODAL: Modifier un eleve	et ses notes
 	$("#eleveTbody").on("click", ".btn-edit", function() { // Delegate event click
 		$this = $(this); // .btn-edit
+
+		console.log("Nouveau tableau: ", tblEleves);
+
 		
 		// Fermer collapse notes
 		$("#collapseNotes").collapse("hide");
 		
 		// Eleve en cours	
-		let id = $this.closest(".text-success").find("a.btn-voir").attr("data-ideleve");		
+		let id = $this.closest(".actions").find("a.btn-voir").attr("data-ideleve");		
 		let eleve = RecupereElementDuTableau(tblEleves, id);		
 		
 		$('#editEleveModal').on('shown.bs.modal', function (e) {
 			$(this).css({"padding-right": "0px", "display" :" block"}); // enlever padding-right du modal
 			
-			$(this).find("#notesEleveTbody").empty();
-			
-			
+			$(this).find("#notesModalTbody").empty();
 			
 			$(this).find("input[name=idEleve]").val(eleve.idEleve);
 			$(this).find("input[name=nom]").val(eleve.nom);
 			$(this).find("input[name=prenom]").val(eleve.prenom);
 		  
 			// Notes
-			notes = JSON.parse(getNotes(id));
+			notes = eleve.notes;
 			
-			// Générer les lignes de notes
-			for(note of notes) {
-				$tr = $("<tr>"
-						+ "<td>" + "<input type='text' id='inputIdNote' name='idNote' value='" + note.idNote + "' class='form-control' readonly>" + "</td>"
-						// + "<td>" + "<input type='text' id='inputIdNote' name='idEleve' value='" + note.idEleve + "' class='form-control' readonly>" + "</td>"
-						+ "<td>" + "<input type='text' name='matiere' value='" + note.matiere +  "' class='form-control' readonly>" + "</td>"
-						+ "<td>" + "<input type='text' name='coef' value='" + note.coef + "' class='form-control' readonly>"+ "</td>"
-						+ "<td>" + "<input type=''text' name='valeur' value='" + note.valeur + "' class='form-control' readonly>" +"</td>"
-						+ "<td>" + "<input type='text' name='dateExam' value='" + note.dateExam +"' class='form-control' readonly>" +"</td>"
-						+ "<td><a href='#note' title='Modifier une note' class='btn btn-success btn-modal-edit' "
-						+ "data-toggle='collapse' data-target='#collapseNoteFormEdit'><i class='material-icons md-24'>edit</i></a></td>"			  
-						+ "<td><a href='#note' title='Supprimer une note' class='btn btn-danger btn-delete'><i class='material-icons md-24'>delete_forever</i></a></td>"						
-						+ "</tr>");
-				
-				$tr.appendTo($("#notesEleveTbody"));
-			}
+			// Générer lignes de notes d'un eleve
+			GenererModalTableauNotesDunEleve(notes , $("#notesModalTbody"));
 		});
 	});
 	
 	// MODAL: ajouter une ligne de note a un eleve
 	$("#btnModalAjoutNote").on("click", function() {
 		$this = $(this); // .btn-edit
-		let id = $this.parents(".modal-content").find("input[name=idEleve]").val();
-		
-		// Eleve en cours			
-		let eleve = RecupereElementDuTableau(tblEleves, id);
+
+		// Eleve en cours
+		const id = $this.parents(".modal-content").find("input[name=idEleve]").val();		
+		const eleve = RecupereElementDuTableau(tblEleves, id);
+
+		// Générer les lignes de notes
 		const nbNotes = eleve.notes.length;
-		
+			
 		// Générer les lignes de notes		
 		$tr = $("<tr>"
-				// + "<td>" + "<input type='text' id='inputIdNote' name='idEleve' class='form-control'>" + "</td>"
-				+ "<td>" + "<input type='text' id='inputIdEleve' name='idNote' value='" + (nbNotes + 1) + "' class='form-control' readonly>" + "</td>"
+				+ "<td>" + "<input type='text' name='idNote' value='" + (nbNotes + 1) + "' class='form-control' readonly>" + "</td>"
 				+ "<td>" + "<input type='text' name='matiere' class='form-control'>" + "</td>"
 				+ "<td>" + "<input type='text' name='coef' class='form-control'>"+ "</td>"
 				+ "<td>" + "<input type=''text' name='valeur' class='form-control'>" +"</td>"
-				+ "<td>" + "<input type='text' name='dateExam' class='form-control'>" +"</td>"
-				+ "<td><a href='#note' title='Modifier une note' class='btn btn-success btn-warning btn-modal-edit edit-bis' "
-				+ "data-toggle='collapse' data-target='#collapseNoteFormEdit'><i class='material-icons md-24'>border_color</i></a></td>"			  
-				+ "<td><a href='#note' title='Supprimer une note' class='btn btn-danger btn-delete'><i class='material-icons md-24'>delete_forever</i></a></td>"						
+				+ "<td>" + "<input type='text' name='dateExam' class='form-control'>" +"</td>"				
+				+ "<td><a href='#' title='Modifier une note' class='btn btn-success btn-warning btn-modal-edit'><i class='material-icons md-24'>border_color</i></a></td>"
+				+ "<td><a href='#' title='Annuler' class='btn btn-secondary btn-modal-cancel'><i class='material-icons md-24'>cancel</i></a></td>"		  
+				+ "<td><a href='#' title='Supprimer une note' class='btn btn-danger btn-modal-delete'><i class='material-icons md-24'>delete_forever</i></a></td>"						
 				+ "</tr>");
 		
-		$tr.appendTo($("#notesEleveTbody"));
+		$tr.appendTo($("#notesModalTbody"));
+
+		
 	});	
+
+	// MODAL: Annuler ajout note
+	$("#editEleveModal").on("click", ".btn-modal-cancel", function(){
+		$(this).closest("tr").remove();
+	});
 	
 	// MODAL: Modifier ligne note
 	$("#editEleveModal").on("click", ".btn-modal-edit", function() {
@@ -138,7 +159,7 @@ $(function() {
 		}
 	});
 
-	// MODAL: Mettre a jours eleve et ses notes dans la bases
+	// MODAL: Mettre a jours eleve et ses notes
 	$('#btnModalMaj').on("click", function() {
 		// Fermer le modal d'edition eleve
 		$('#editEleveModal').modal('hide');
@@ -154,7 +175,7 @@ $(function() {
 			let eleveToUpdate = null;
 			
 			eleveNotesToUpdate = [];
-			$("#notesEleveTbody tr").each(function(){
+			$("#notesModalTbody tr").each(function(){
 				// eleve notes
 				let idNoteTxt = $(this).find("input[name=idNote]").val();
 				let matiereTxt = $(this).find("input[name=matiere]").val();
@@ -180,8 +201,6 @@ $(function() {
 					prenom: prenomTxt,
 					notes: eleveNotesToUpdate
 			};
-			//console.log("id eleve to update", idEleveTxt);
-			//console.log("Eleve to update", eleveToUpdate);
 			
 			// Position de eleveToUpdate dans le tableau eleves (tblEleves)
 			const pos = tblEleves.findIndex(e => eleveToUpdate.idEleve == e.idEleve);
@@ -190,29 +209,47 @@ $(function() {
 			tblEleves.splice(pos, 1, eleveToUpdate);
 			
 			// Regénérer l'affichage des éléve dans la page accueil
-			GenerationTableauEleves(tblEleves , $("#eleveTbody"));
+			GenererTableauEleves(tblEleves , $("#eleveTbody"));
 
-			// Regénérer l'affichage des notes
-			GenerationTableauNotesDunEleve(eleveToUpdate , $("#notesTbody"));
-			$("#collapseNotes").collapse("show");
-			
+			// Icone du bouton "btn-voir" sur "visibility_off" pour eleve courant
+			$("#eleveTbody")
+				.find(".btn-voir[data-ideleve=" + eleveToUpdate.idEleve + "]").addClass("btn-success")
+					.find("i").empty().text("visibility_off");
+
+			// Reactualiser l'affichage des notes
+			GenererTableauNotesDunEleve(eleveToUpdate , $("#notesTbody"));
+			$("#collapseNotes").collapse("show");			
 			
 		});
 		
 	});
-		
-	// Voir les notes d un eleve
-	$("#eleveTbody").on("click", ".btn-voir", function() {
-		// Infos eleve
-		const id = $(this).attr("data-ideleve");
-		const eleve = RecupereElementDuTableau(tblEleves, id);
 
-		// Generer les tr notes
-		GenerationTableauNotesDunEleve(eleve , $("#notesTbody"));
+	// MODAL: Supprimer une note d un eleve
+	$("#editEleveModal").on("click", ".btn-modal-delete", function() {
+		const id_note = $(this).closest("tr").find("input[name=idNote]").val();
+		const id_eleve = $("#editEleveModal").find("input[name=idEleve]").val();
+
+		const eleve = RecupereElementDuTableau(tblEleves, id_eleve);
+		const posNoteToDelete = eleve.notes.findIndex( n => n.idNote == id_note);
+
+		// Supprimer note eleve
+		eleve.notes.splice(posNoteToDelete, 1);
+
+		console.log(eleve.notes);
+
+		// Réactualiser l'affichage des notes
+		GenererModalTableauNotesDunEleve(eleve.notes, $("#notesModalTbody"));
+
 	});
-	
-	
-	
-	
+		
+	// Scroll to bloc collapseNotes
+	$('#collapseNotes').on('shown.bs.collapse', function () {
+		this.scrollIntoView();
+	});
+
+	// Reouvrir immediatement le bloc collapseNotes when il est fermé
+	$('#collapseNotes').on('hidden.bs.collapse', function () {
+		$(this).collapse("show");
+	});
 	
 });

@@ -57,7 +57,7 @@ let tblEleves = [
  * @param {*} tableauDeDonnees 
  * @param {*} composantGraphiqueParent 
  */
-function GenerationTableauEleves(tableauDeDonnees , composantGraphiqueParent) {
+function GenererTableauEleves(tableauDeDonnees , composantGraphiqueParent) {
 	composantGraphiqueParent.empty();
 	
 	for(eleve of tableauDeDonnees)
@@ -66,9 +66,9 @@ function GenerationTableauEleves(tableauDeDonnees , composantGraphiqueParent) {
 			+ "<td>" + eleve.idEleve + "</td>"
 			+ "<td>" + eleve.nom + "</td>"
 			+ "<td>" + eleve.prenom + "</td>"
-			+ "<td class='text-success'>"
-			+ "<a href='#collapseNote' title='Voir les notes' class='btn btn-success btn-voir' data-ideleve='" + eleve.idEleve + "'" 
-			+ "data-toggle='collapse' data-target='#collapseNotes'><i class='material-icons md-24'>notes</i></a> "	
+			+ "<td class='actions'>"
+			+ "<a href='#collapseNotes' title='Voir les notes' class='btn btn-primary btn-voir' data-ideleve='" + eleve.idEleve + "'" 
+			+ "data-toggle='collapse' data-target='#collapseNotes'><i class='material-icons md-24'>visibility</i></a> "	
 			+ "<a href='#eleve' title='Modifier un élève' class='btn btn-warning btn-edit'"	
 			+ "data-toggle='modal' data-target='#editEleveModal'><i class='material-icons md-24'>edit</i></a> "	  
 			+ "<a href='#eleve' title='Supprimer un élève' class='btn btn-danger btn-delete'><i class='material-icons md-24'>delete_forever</i></a>"									
@@ -144,9 +144,13 @@ function insererLigneEleve(valeurs) {
 	}
 }
 
-
-function GenerationTableauNotesDunEleve(eleve , composantGraphiqueParent) {
-	// Vider le bloc notesTbody 
+/**
+ * Générer les lignes tr de notes
+ * @param {*} eleve 
+ * @param {*} composantGraphiqueParent 
+ */
+function GenererTableauNotesDunEleve(eleve , composantGraphiqueParent) {
+	// Vider le bloc notesModalTbody 
 	composantGraphiqueParent.empty();
 
 	let $tr = null;
@@ -167,15 +171,33 @@ function GenerationTableauNotesDunEleve(eleve , composantGraphiqueParent) {
 }
 
 /**
- * Recuperer les notes d un eleve by id
- * @param {*} id 
+ * Générer les lignes de notes d un eleve dans le modal
+ * @param {*} eleve 
+ * @param {*} composantGraphiqueParent 
  */
-function getNotes(id) {
-	const eleve = RecupereElementDuTableau(tblEleves, id);
-	const notesEleve = eleve.notes;
-	
-	return JSON.stringify(notesEleve);
+function GenererModalTableauNotesDunEleve(notes, composantGraphiqueParent) {
+	// Vider le bloc notesModalTbody 
+	composantGraphiqueParent.empty();
+
+	let $tr = null;
+		
+	// Générer les lignes de notes		
+	// Générer les lignes de notes
+	for(note of notes) {
+		$tr = $("<tr>"
+				+ "<td>" + "<input type='text' name='idNote' value='" + note.idNote + "' class='form-control' readonly>" + "</td>"
+				+ "<td>" + "<input type='text' name='matiere' value='" + note.matiere +  "' class='form-control' readonly>" + "</td>"
+				+ "<td>" + "<input type='text' name='coef' value='" + note.coef + "' class='form-control' readonly>"+ "</td>"
+				+ "<td>" + "<input type=''text' name='valeur' value='" + note.valeur + "' class='form-control' readonly>" +"</td>"
+				+ "<td>" + "<input type='text' name='dateExam' value='" + note.dateExam +"' class='form-control' readonly>" +"</td>"
+				+ "<td><a href='#note' title='Modifier une note' class='btn btn-success btn-modal-edit'><i class='material-icons md-24'>edit</i></a></td>"		  
+				+ "<td colspan='2'><a href='#note' title='Supprimer une note' class='btn btn-danger btn-modal-delete'><i class='material-icons md-24'>delete_forever</i></a></td>"						
+				+ "</tr>");
+		
+		$tr.appendTo($("#notesModalTbody"));
+	}
 }
+
 
 	
 	
