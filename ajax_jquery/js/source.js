@@ -110,7 +110,7 @@ $(function() {
 		});
 	});
 	
-	// MODAL: ajouter une ligne de note a un eleve
+	// MODAL: Ajouter une ligne de note a un eleve
 	$("#btnModalAjoutNote").on("click", function() {
 		$this = $(this); // .btn-edit
 
@@ -130,7 +130,7 @@ $(function() {
 				+ "<td>" + "<input type='text' name='dateExam' class='form-control'>" +"</td>"				
 				+ "<td><a href='#' title='Modifier une note' class='btn btn-success btn-warning btn-modal-edit'><i class='material-icons md-24'>border_color</i></a></td>"
 				+ "<td><a href='#' title='Annuler' class='btn btn-secondary btn-modal-cancel'><i class='material-icons md-24'>cancel</i></a></td>"		  
-				+ "<td><a href='#' title='Supprimer une note' class='btn btn-danger btn-modal-delete'><i class='material-icons md-24'>delete_forever</i></a></td>"						
+				// + "<td><a href='#' title='Supprimer une note' class='btn btn-danger btn-modal-delete'><i class='material-icons md-24'>delete_forever</i></a></td>"						
 				+ "</tr>");
 		
 		$tr.appendTo($("#notesModalTbody"));
@@ -173,8 +173,8 @@ $(function() {
 			
 			// Eleve
 			const idEleveTxt = $(this).find("input[name=idEleve]").val();
-			const nomTxt = $(this).find("input[name=nom]").val();
-			const prenomTxt = $(this).find("input[name=prenom]").val();
+			const nomTxt = $(this).find("input[name=nom]").val().trim();
+			const prenomTxt = $(this).find("input[name=prenom]").val().trim();
 			
 			// const EleveCourant = RecupereElementDuTableau(tblEleves, idEleveTxt);
 			let eleveToUpdate = null;
@@ -183,21 +183,23 @@ $(function() {
 			$("#notesModalTbody tr").each(function(){
 				// eleve notes
 				let idNoteTxt = $(this).find("input[name=idNote]").val();
-				let matiereTxt = $(this).find("input[name=matiere]").val();
-				let coefTxt = $(this).find("input[name=coef]").val();
-				let valeurTxt = $(this).find("input[name=valeur]").val();
-				let dateExamTxt = $(this).find("input[name=dateExam]").val();
-				
-				let note = { 
-					idNote: idNoteTxt, 
-					valeur: valeurTxt, 
-					coef: coefTxt, 
-					matiere: matiereTxt, 
-					dateExam: dateExamTxt
-				};
-				
-				eleveNotesToUpdate.push(note);
-				
+				let matiereTxt = $(this).find("input[name=matiere]").val().trim();
+				let coefTxt = $(this).find("input[name=coef]").val().trim();
+				let valeurTxt = $(this).find("input[name=valeur]").val().trim();
+				let dateExamTxt = $(this).find("input[name=dateExam]").val().trim();
+
+				// Champs note non vides
+				if(matiereTxt !== "" && coefTxt !== "" && valeurTxt !== "" && dateExamTxt !== "") {
+					let note = { 
+						idNote: idNoteTxt, 
+						valeur: valeurTxt, 
+						coef: coefTxt, 
+						matiere: matiereTxt, 
+						dateExam: dateExamTxt
+					};
+
+					eleveNotesToUpdate.push(note);
+				}
 			});
 			
 			eleveToUpdate = {

@@ -1,5 +1,5 @@
 let tblEleves = [
-	{idEleve :1,nom:"prost",prenom:"Alain",notes:[
+	{idEleve :1,nom:"Prost",prenom:"Alain",notes:[
 		{idNote:1,valeur:18 , coef:4 , matiere:"MATHS",dateExam:"18/02/2019"},
 		{idNote:2,valeur:15 , coef:3 , matiere:"INFO",dateExam:"13/03/2019"},
 		{idNote:3,valeur:12 , coef:3 , matiere:"ANGLAIS",dateExam:"15/03/2019"}
@@ -153,7 +153,7 @@ function GenererModalTableauNotesDunEleve(notes, composantGraphiqueParent) {
 				+ "<td>" + "<input type=''text' name='valeur' value='" + note.valeur + "' class='form-control' readonly>" +"</td>"
 				+ "<td>" + "<input type='text' name='dateExam' value='" + note.dateExam +"' class='form-control' readonly>" +"</td>"
 				+ "<td><a href='#note' title='Modifier une note' class='btn btn-success btn-modal-edit'><i class='material-icons md-24'>edit</i></a></td>"		  
-				+ "<td colspan='2'><a href='#note' title='Supprimer une note' class='btn btn-danger btn-modal-delete'><i class='material-icons md-24'>delete_forever</i></a></td>"						
+				+ "<td><a href='#note' title='Supprimer une note' class='btn btn-danger btn-modal-delete'><i class='material-icons md-24'>delete_forever</i></a></td>"						
 				+ "</tr>");
 		
 		$tr.appendTo($("#notesModalTbody"));
