@@ -106,44 +106,6 @@ function getEleveById(id) {
 	return JSON.stringify(eleve);
 }
 
-
-/**
- * Insérer une nouvelle ligne tr (eleve) dans un table
- * @param {*} valeurs 
- */
-function insererLigneEleve(valeurs) {
-	const {nom, prenom} = valeurs;
-	
-	let nbEleves = tblEleves.length + 1;
-			
-	if(nom !== "" && prenom .trim() !== "") {
-		tdIdEleve = "<td>"+ nbEleves +"</td>";
-		tdNom = "<td>"+ nom +"</td>";
-		tdPrenom ="<td>"+ prenom +"</td>";
-		
-		tdActions =  "<td class='text-success'>";
-		tdActions += "<a href='#collapseNote' title='Voir les notes' class='btn btn-success btn-voir' data-ideleve='" + nbEleves + "' data-toggle='collapse' data-target='#collapseNotes'><i class='material-icons md-24'>notes</i></a> ";
-		tdActions += "<a href='#eleve' title='Modifier un élève' class='btn btn-warning btn-edit' data-toggle='modal' data-target='#editEleveModal'><i class='material-icons md-24'>edit</i></a>" ;
-		tdActions += " <a href='#eleve' title='Supprimer un élève' class='btn btn-danger btn-delete'><i class='material-icons md-24'>delete_forever</i></a></td>";
-		
-		$tr = $("<tr data-toggle='collapse' data-target='#eleve_" + nbEleves +"' class='accordion-toggle'>" 
-				+ tdIdEleve 
-				+ tdNom 
-				+ tdPrenom
-				+ tdActions
-				+ "</tr>");
-		
-		let eleve = null;
-		
-		eleve = { "idEleve": nbEleves, "nom": nom, "prenom": prenom, "notes": [] };
-		
-		// Ajouter cet nouvel eleve dans le tableau tblEleves
-		tblEleves.push(eleve);
-		
-		return $tr;
-	}
-}
-
 /**
  * Générer les lignes tr de notes
  * @param {*} eleve 

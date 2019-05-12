@@ -5,13 +5,19 @@ $(function() {
 	// Ajouter eleve
 	$("#btnAddEleve").on("click", function() {
 
-		$tr = insererLigneEleve({ 
-			nom: $("#txtNom").val(), 
-			prenom: $("#txtPrenom").val()
-		});
-		
-		// Insert tr dans table
-		$("#eleveTbody").append($tr);
+		const nomTxt = $("#txtNom").val();
+		const prenomTxt = $("#txtPrenom").val();
+
+		// Nouvel eleve
+		const eleve = {
+			idEleve: tblEleves.length + 1,
+			nom: nomTxt,
+			prenom: prenomTxt,
+			notes: []
+		}
+
+		// Ajouter eleve dans la table tblEleves
+		tblEleves.push(eleve);
 		
 		// Vider les champs
 		$("#txtIdEleve").val("");
@@ -20,10 +26,9 @@ $(function() {
 		
 		// Fermer le formulaire d'edition
 		$('#collapseEleveFormAjout').collapse('hide');
-		
-		
-		// Nouveau table eleves
-		// console.log(tblEleves);
+
+		// Reactualiser l affichage des eleves
+		GenererTableauEleves(tblEleves , $("#eleveTbody"));
 		
 	});
 
