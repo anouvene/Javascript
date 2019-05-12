@@ -5,19 +5,21 @@ $(function() {
 	// Ajouter eleve
 	$("#btnAddEleve").on("click", function() {
 
-		const nomTxt = $("#txtNom").val();
-		const prenomTxt = $("#txtPrenom").val();
+		const nomTxt = $("#txtNom").val().trim();
+		const prenomTxt = $("#txtPrenom").val().trim();
 
-		// Nouvel eleve
-		const eleve = {
-			idEleve: tblEleves.length + 1,
-			nom: nomTxt,
-			prenom: prenomTxt,
-			notes: []
+		if(nomTxt !== "" && prenomTxt !== "") {
+			// Nouvel eleve
+			const eleve = {
+				idEleve: tblEleves.length + 1,
+				nom: nomTxt,
+				prenom: prenomTxt,
+				notes: []
+			}
+
+			// Ajouter eleve dans la table tblEleves
+			tblEleves.push(eleve);
 		}
-
-		// Ajouter eleve dans la table tblEleves
-		tblEleves.push(eleve);
 		
 		// Vider les champs
 		$("#txtIdEleve").val("");
@@ -54,29 +56,30 @@ $(function() {
 
 		// Generer les tr notes
 		GenererTableauNotesDunEleve(eleve , $("#notesTbody"));
+
+		// Reouvrir immediatement le bloc collapseNotes when il est fermé
+		$('#collapseNotes').on('hidden.bs.collapse', function () {
+			$(this).collapse("show");
+		});
 	});
 		
 	// Supprimer un eleve
 	$("#eleveTbody").on("click", ".btn-delete", function() {
-		let id = $(this).closest(".actions").find("a.btn-voir").attr("data-ideleve");
-		console.log("ID eleve à supprimer: ", id);
-
-		let eleve = RecupereElementDuTableau(tblEleves, id);
-		let posEleve = tblEleves.findIndex( e => e.idEleve == id);
-		console.log("Position eleve dans le tableau", posEleve);
+		const id = $(this).closest(".actions").find("a.btn-voir").attr("data-ideleve");
+		const eleve = RecupereElementDuTableau(tblEleves, id);
+		const posEleve = tblEleves.findIndex( e => e.idEleve == id);
 		
 		// Supprimer eleve
 		const eleveDeleted = tblEleves.splice(posEleve, 1);
-
-		console.log("Eleve supprimé: ", eleveDeleted);
-
 
 		// Reactualiser l'affichage tableau
 		GenererTableauEleves(tblEleves , $("#eleveTbody"));
 
 		// Vider et fermer notesTbody
 		$("#notesTbody").empty();
-		$("#collapseNotes").collapse("hide");
+		$("#collapseNotes").removeClass("show");
+		
+		
 	});
 			
 	// MODAL: Modifier un eleve	et ses notes
@@ -252,11 +255,6 @@ $(function() {
 	// Scroll to bloc collapseNotes
 	$('#collapseNotes').on('shown.bs.collapse', function () {
 		this.scrollIntoView();
-	});
-
-	// Reouvrir immediatement le bloc collapseNotes when il est fermé
-	$('#collapseNotes').on('hidden.bs.collapse', function () {
-		$(this).collapse("show");
 	});
 	
 });
