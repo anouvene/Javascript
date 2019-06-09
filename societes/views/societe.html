@@ -1,0 +1,179 @@
+{% extends 'layout.html' %}
+
+{% block title %}Liste des sociétes{% endblock %}
+
+{% block head %}
+{% parent %}
+<link rel="stylesheet" href="stylesheets/custom.css">
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Liste des societes -->
+    <form id="societe_form" class="col-md-8 offset-md-2">
+      <!-- <h3>SOCIETES</h3>
+      <table class="table table-condensed" style="border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nom</th>
+            <th>CA</th>
+            <th>Activite</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="societesTbody">
+        </tbody>
+      </table> -->
+
+
+
+      <h3>SOCIETES AVEC EXPRESS/SWIG</h3>
+      <table class="table table-condensed" style="border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nom</th>
+            <th>CA</th>
+            <th>Activite</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="societesTbody">
+          {% for societe in societes %}
+          <tr>
+            <td> {{societe.ID_SOCIETE}} </td>
+            <td> {{societe.Nom}}</td>
+            <td> {{societe.CA}}</td>
+            <td> {{societe.Activite}}</td>
+            <td class='actions'>
+              <a href='#collapsePersonnes' title='Voir les personnes' class='btn btn-primary btn-voir'
+                data-idsociete='{{societe.ID_SOCIETE}}' data-toggle='collapse' data-target='#collapsePersonnes'>
+                <i class='material-icons md-24'>visibility</i>
+              </a>
+              <a href='#societe' title='Modifier une societe' class='btn btn-warning btn-edit'
+                data-idsociete='{{societe.ID_SOCIETE}}' data-toggle='modal' data-target='#editSocieteModal'><i
+                  class='material-icons md-24'>edit</i></a>
+              <a href='#societe' title='Supprimer une societe' class='btn btn-danger btn-delete'
+                data-idsociete='{{societe.ID_SOCIETE}}'><i class='material-icons md-24'>delete_forever</i></a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      
+    </form>
+  </div>
+
+  <!-- LES PERSONNES DE LA SOCIETE -->
+  <div id="collapsePersonnes" class="row collapse">
+    <div class="col-md-8 offset-md-2">
+        <h3 class="col-">EMPLOYES</h3>
+        <table class="table table-condensed table-responsive-sm" style="border-collapse: collapse;">
+            <thead>
+            <tr>
+                <th scope="col">Identifiant personne</th>
+                <th scope="col">Identifiant societe</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Prenom</th>
+                <th scope="col">Poids</th>
+                <th scope="col">Taille</th>
+                <th scope="col">Sexe</th>
+            </tr>
+            </thead>
+            <tbody id="personnesTbody">
+              <!-- Partie dynamique employes -->
+            
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+  <!-- AJOUTER UNE SOCIETE -->
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="form-group row justify-content-center">
+        <div class="col-sm-12">
+          <a href="#eleve_form_ajout" class="btn btn-primary" title="Ajouter une societe" data-toggle="collapse"
+            data-target="#collapseSocieteFormAjout">Ajouter une societe</a>
+        </div>
+      </div>
+      <!-- Formulaire ajout societe -->
+      <div class="collapse" id="collapseSocieteFormAjout">
+        <form id="eleve_form_ajout">
+          <!-- ID societe -->
+          <div class="form-group row">
+            <label for="txtID" class="col-sm-2 col-form-label col-form-label-lg">Id societe</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control form-control-lg" id="txtID">
+            </div>
+          </div>
+
+          <!-- Nom -->
+          <div class="form-group row">
+            <label for="txtNom" class="col-sm-2 col-form-label col-form-label-lg">Nom</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control form-control-lg" id="txtNom">
+            </div>
+          </div>
+
+          <!-- CA -->
+          <div class="form-group row">
+            <label for="txtCA" class="col-sm-2 col-form-label col-form-label-lg">CA</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control form-control-lg" id="txtCA">
+            </div>
+          </div>
+
+          <!-- Activite -->
+          <div class="form-group row">
+            <label for="txtActivite" class="col-sm-2 col-form-label col-form-label-lg">Activite</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control form-control-lg" id="txtActivite">
+            </div>
+          </div>
+
+          <!-- Valider -->
+          <div class="form-group row justify-content-center">
+            <div class="col-sm-4">
+              <input type="button" class="form-control btn btn-success" value="Valider" id="btnAddSociete">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EDITION SOCIETE/PERSONNES -->
+  <div class="modal fade" id="editSocieteModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalCenterTitle">Modifier une societe</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="societeModal"></form>
+        </div>
+        <div class="modal-footer">
+          <a href="#" title="Ajouter une nouvelle personne" class="btn btn-secondary" id="btnModalAjoutPersonne">Ajouter
+            une nouvelle personne</a>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-warning" id="btnModalMaj">MAJ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+
+<script src="javascripts/source.js"></script>
+{% endblock %}

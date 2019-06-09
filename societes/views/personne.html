@@ -1,0 +1,33 @@
+<div id="collapsePersonnes" class="row collapse">
+    <div class="col-md-8 offset-md-2">
+        <h3 class="col-">EMPLOYES</h3>
+        <table class="table table-condensed table-responsive-sm" style="border-collapse: collapse;">
+            <thead>
+            <tr>
+                <th scope="col">Identifiant personne</th>
+                <th scope="col">Identifiant societe</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Prenom</th>
+                <th scope="col">Poids</th>
+                <th scope="col">Taille</th>
+                <th scope="col">Sexe</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Partie dynamique employes -->
+            {% for personne in personnes %}
+            <tr>
+                <td>{{ personne.ID_Personne }}</td>
+                <td>{{personne.ID_SOCIETE}}</td>
+                <td>{{personne.Nom}}</td>
+                <td>{{personne.Prenom}}</td>
+                <td>{{personne.Poids}}</td>
+                <td>{{personne.Taille}}</td>
+                <td>{{personne.Sexe}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
